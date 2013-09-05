@@ -55,29 +55,29 @@ module Mercadopago
 	module Rest
 		URL = "https://api.mercadolibre.com/"
 
-		def exec(method, url, data=nil, json=false)
+		def exec(method, url, data=nil, json=false)	
 			url = uri(url)
-      if json
-        RestClient.send(method, url, data.to_json, :content_type => :json, :accept => :json) do |response, request, result|
-			    {
-				    :status => response.code,
-				    :response => JSON.parse(response)
-			    }
-        end
-      else
-         RestClient.send(method, url, data) do |response, request, result|
-			    {
-				    :status => response.code,
-				    :response => JSON.parse(response)
-			    }
-        end
-      end
+			if json
+				RestClient.send(method, url, data.to_json, :content_type => :json, :accept => :json) do |response, request, result|
+					{
+						:status => response.code,
+						:response => JSON.parse(response)
+					}
+				end
+			else
+				RestClient.send(method, url, data) do |response, request, result|
+					{
+						:status => response.code,
+						:response => JSON.parse(response)
+					}
+				end
+			end
 		end
-
+		
 		def uri(url)
 			URI.join(URL, url).to_s
 		end
+		
 		module_function :exec, :uri
 	end
-
 end
