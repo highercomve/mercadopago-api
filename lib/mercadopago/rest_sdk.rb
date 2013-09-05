@@ -33,18 +33,18 @@ module Mercadopago
 		end
 
 		def create_checkout_preference(data, exclude_methods=nil)
-      unless exclude_methods.nil?
-        data[:payment_methods] = { 
-          :excluded_payment_methods => exclude_methods
-        }
+			unless exclude_methods.nil?
+				data[:payment_methods] = { 
+					:excluded_payment_methods => exclude_methods
+				}
       end
-      url = "/checkout/preferences?access_token="+access_token
+			url = "/checkout/preferences?access_token="+access_token
 			result = Rest::exec(:post, url, data, true)
-      if result[:status] = 201
-			  @checkout = result[:response]
-      else
-        result
-      end
+			if result[:status] = 201
+				@checkout = result[:response]
+			else
+				result
+			end
 		end
 
 		def get_payment_info(id)
