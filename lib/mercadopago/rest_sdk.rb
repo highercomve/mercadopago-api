@@ -37,7 +37,7 @@ module Mercadopago
 				data[:payment_methods] = { 
 					:excluded_payment_methods => exclude_methods
 				}
-      end
+			end
 			url = "/checkout/preferences?access_token="+access_token
 			result = Rest::exec(:post, url, data, true)
 			if result[:status] = 201
