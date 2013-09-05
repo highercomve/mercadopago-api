@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Sergio Marin"]
   spec.email         = ["higher.vnf@gmail.com"]
   spec.description   = %q{Gem to manage the mercadopago api}
-  spec.summary       = %q{This gem manage the Mercadopago api using curl and mercadopago rest api}
+  spec.summary       = %q{This gem manage the Mercadopago api using rest-client and mercadopago rest api}
   spec.homepage      = ""
   spec.license       = "MIT"
 
@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'json'
-  spec.add_dependency "curb"
+  spec.add_dependency 'rest-client'
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
 end
