@@ -10,8 +10,8 @@ module Mercadopago
 		attr_writer :access_token
 		
 		def initialize(client_id=nil, client_secret=nil, currency=nil, sanbox=false)
-			@client_id = client_id || "5453328363694708"
-			@client_secret = client_secret || "wxO9sB8Mer7wFzrjHUHLHC3iGygc4zgm"
+			@client_id = client_id 
+			@client_secret = client_secret
 			@sanbox = sanbox
 		end
 
@@ -47,16 +47,40 @@ module Mercadopago
 			end
 		end
 
-		def get_payment_info(id)
-			url = "/collections/notifications/#{id}?access_token=#{access_token}"
+		def update_checkout_preference(preference_id, data)
+			url = "checkout/preferences/#{preference_id}?access_token=#{access_token}"
+			response = Rest::exec(:put, url, data, true)
+		end
+
+		def get_checkout_preference(id)
+			url = "/checkout/preferences/#{preference_id}?access_token=#{access_token}"
 			response = Rest::exec(:get, url, nil, true)
 		end
 
-		def search_payment(id)
-			url = "collections/#{id}?access_token=#{access_token}"
-			response = Rest::exec(:get, url, nil, true)
+		def get_payment_info(notification_id)
+			url = "/collections/notifications/#{notification_id}?access_token=#{access_token}"
+			Rest::exec(:get, url, nil, true)
 		end
 
+		def search_payment(payment_id)
+			url = "collections/#{payment_id}?access_token=#{access_token}"
+			Rest::exec(:get, url, nil, true)
+		end
+
+		def create_test_user(site_id)
+			url = "users/test_user?access_token=#{access_token}"
+			Rest::exec(:post, url, { :site_id => site_id }, true )
+		end
+
+		def refund_payment(payment_id)
+			url = "/collections/#{payment_id}?access_token=#{access_token}"
+			Rest::exec(:put, url, {:status => "refunded"}, true )
+		end
+
+		def cancel_payment(payment_id)
+			url = "/collections/#{payment_id}?access_token=#{access_token}"
+			Rest::exec(:put, url, {:status => "cancelled"}, true )
+		end
 	end
 
 	module Rest
