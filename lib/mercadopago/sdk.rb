@@ -4,8 +4,8 @@ require 'json/add/core'
 require 'uri'
 
 module Mercadopago
-	class Api
-		
+	class Sdk
+
 		attr_accessor :client_id, :client_secret, :sanbox, :currency, :checkout
 		attr_writer :access_token
 		
