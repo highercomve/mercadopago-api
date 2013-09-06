@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'rest_client'
-require 'json/add/core'
+require 'json/ext'
 require 'uri'
 
 module Mercadopago
@@ -23,7 +23,7 @@ module Mercadopago
 				:client_secret => @client_secret
 			}
 			result = Rest::exec(:post, url, data)
-			if result[:status] == 200
+			if result[:code] == 200
 			  @access_token = result[:response]["access_token"] 
 			end
 		end
@@ -39,45 +39,60 @@ module Mercadopago
 				}
 			end
 			url = "/checkout/preferences?access_token="+access_token
-			result = Rest::exec(:post, url, data, true)
-			if result[:status] = 201
-				@checkout = result[:response]
+			response = Rest::exec(:post, url, data, true)
+			if response[:code] = 201
+				@checkout = response[:response]
 			else
-				result
+				response
 			end
 		end
 
 		def get_payment_info(id)
-      
+			url = "/collections/notifications/#{id}?access_token=#{access_token}"
+			response = Rest::exec(:get, url, nil, true)
 		end
+
+		def search_payment(id)
+			url = "collections/#{id}?access_token=#{access_token}"
+			response = Rest::exec(:get, url, nil, true)
+		end
+
 	end
 
 	module Rest
 		URL = "https://api.mercadolibre.com/"
-
 		def exec(method, url, data=nil, json=false)	
 			url = uri(url)
-			if json
-				RestClient.send(method, url, data.to_json, :content_type => :json, :accept => :json) do |response, request, result|
-					{
-						:status => response.code,
-						:response => JSON.parse(response)
-					}
+			if !data.nil? and json
+				RestClient.send(method, url, data.to_json,  :content_type => :json, :accept => :json) do |response, request, result|
+					build_response(response)
 				end
-			else
+			elsif data.nil? and json
+				RestClient.send(method, url, :accept => :json) do |response, request, result|
+					build_response(response)
+				end
+			#elsif data.nil? and !json
+			#	RestClient.send(method, url) do |response, request, result|
+			#		build_response(response)
+			#	end
+			else 
 				RestClient.send(method, url, data) do |response, request, result|
-					{
-						:status => response.code,
-						:response => JSON.parse(response)
-					}
+					build_response(response)
 				end
-			end
+			end	
 		end
 		
+		def build_response( response )
+			{
+				:code => response.code,
+				:response => JSON.parse(response.force_encoding("UTF-8"))
+			}
+		end
+
 		def uri(url)
 			URI.join(URL, url).to_s
 		end
 		
-		module_function :exec, :uri
+		module_function :exec, :uri, :build_response
 	end
 end

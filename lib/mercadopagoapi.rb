@@ -1,3 +1,6 @@
-# Compatibility to autorequire schemes
+require_relative "./mercadopago/sdk"
+require_relative "./mercadopago/version"
 
-require File.dirname(__FILE__) + "/mercadopago-api.rb"
+module Mercadopago
+
+end
