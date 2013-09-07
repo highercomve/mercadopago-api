@@ -16,7 +16,7 @@ module Mercadopago
 		end
 
 		def sdk
-			@sdk ||= Sdk.new(credentials[:client_id], credentials[:client_secret])
+			@sdk ||= Sdk.new(credentials[:client_id], credentials[:client_secret], config[:sandbox])
 		end
 
 		def credentials
@@ -54,6 +54,7 @@ end
 		# {
 		# :currency_id ,
 		# :site_id,
+		# :sandbox,
 		# :back_urls => {
   	#   "success": "https://www.success.com",
   	#   "failure": "http://www.failure.com",
