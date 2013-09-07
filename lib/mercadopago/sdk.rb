@@ -83,7 +83,7 @@ module Mercadopago
 		end
 
 		def sandbox_prefix 
-			@sanbox ? "/sandbox":"":
+			@sanbox ? "/sandbox":""
 		end
 
 	end
