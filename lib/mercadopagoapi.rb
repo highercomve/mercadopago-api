@@ -25,8 +25,11 @@ module Mercadopago
 		end
 
 		def preference
-			raise "You have to create or get a preference first" if @preference.nil?
-			@preference
+			if @preference.nil?
+				raise "You have to create or get a preference first" 
+			else
+				@preference
+			end
 		end
 
 		def config
