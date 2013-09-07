@@ -16,7 +16,7 @@ module Mercadopago
 		end
 
 		def sdk
-			@sdk ||= Sdk.new(credentials[:client_id], credentials[:client_id])
+			@sdk ||= Sdk.new(credentials[:client_id], credentials[:client_secret])
 		end
 
 		def credentials
