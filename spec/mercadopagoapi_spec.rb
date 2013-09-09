@@ -20,6 +20,7 @@ describe 'Mercado Pago api' do
 
 	it "The object must initialize only with credentials" do
 		@api.should be_kind_of(Mercadopago::Mp)
+		@api.credentials should == @credenciales
 	end
 
 	it "The sdk most have a token to work" do
