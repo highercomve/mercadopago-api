@@ -6,13 +6,13 @@ require 'uri'
 module Mercadopago
 	class Sdk
 
-		attr_accessor :client_id, :client_secret, :sanbox, :currency, :checkout
+		attr_accessor :client_id, :client_secret, :sandbox, :checkout
 		attr_writer :access_token
 		
-		def initialize(client_id=nil, client_secret=nil, sanbox=false)
+		def initialize(client_id, client_secret, sandbox=false)
 			@client_id = client_id 
 			@client_secret = client_secret
-			@sanbox = sanbox
+			@sandbox = sandbox
 		end
 
 		def get_access_token
@@ -24,7 +24,7 @@ module Mercadopago
 			}
 			result = Rest::exec(:post, url, data)
 			if result[:code] == 200
-			  @access_token = result[:response]["access_token"] 
+				@access_token = result["access_token"] 
 			end
 		end
 
@@ -41,7 +41,7 @@ module Mercadopago
 			url = "/checkout/preferences?access_token="+access_token
 			response = Rest::exec(:post, url, data, true)
 			if response[:code] = 201
-				@checkout = response[:response]
+				@checkout = response
 			else
 				response
 			end
@@ -49,12 +49,12 @@ module Mercadopago
 
 		def update_checkout_preference(preference_id, data)
 			url = sandbox_prefix + "/checkout/preferences/#{preference_id}?access_token=#{access_token}"
-			response = Rest::exec(:put, url, data, true)
+			Rest::exec(:put, url, data, true)
 		end
 
 		def get_checkout_preference(id)
 			url = sandbox_prefix + "/checkout/preferences/#{preference_id}?access_token=#{access_token}"
-			response = Rest::exec(:get, url, nil, true)
+			Rest::exec(:get, url, nil, true)
 		end
 
 		def get_payment_info(notification_id)
@@ -65,6 +65,12 @@ module Mercadopago
 		def search_payment(payment_id)
 			url = sandbox_prefix + "/collections/#{payment_id}?access_token=#{access_token}"
 			Rest::exec(:get, url, nil, true)
+		end
+
+		def search_payments_where(params)
+			url = sandbox_prefix + "/collections/search"
+			params[:access_token] = access_token 
+			Rest::exec(:get, url, { :params => params })		
 		end	
 
 		def create_test_user(site_id)
@@ -83,7 +89,7 @@ module Mercadopago
 		end
 
 		def sandbox_prefix 
-			@sanbox ? "/sandbox":""
+			@sandbox ? "/sandbox":""
 		end
 
 	end
@@ -100,10 +106,6 @@ module Mercadopago
 				RestClient.send(method, url, :accept => :json) do |response, request, result|
 					build_response(response)
 				end
-			#elsif data.nil? and !json
-			#	RestClient.send(method, url) do |response, request, result|
-			#		build_response(response)
-			#	end
 			else 
 				RestClient.send(method, url, data) do |response, request, result|
 					build_response(response)
@@ -112,10 +114,9 @@ module Mercadopago
 		end
 		
 		def build_response( response )
-			{
-				:code => response.code,
-				:response => JSON.parse(response.force_encoding("UTF-8"))
-			}
+			r = JSON.parse(response.force_encoding("UTF-8"))
+			r[:code] = response.code
+			return r
 		end
 
 		def uri(url)
