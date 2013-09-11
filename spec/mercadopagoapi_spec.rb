@@ -33,7 +33,7 @@ describe 'Mercado Pago api' do
 		@api.config.should == config
 	end
 
-	it "The preference need to be a mercadopago api preference hash, respond 200"
+	it "The preference need to be a mercadopago api preference hash, respond 200" do
 		
 	end
 end
