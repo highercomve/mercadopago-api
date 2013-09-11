@@ -5,9 +5,14 @@ describe 'Test Mercadopago Api Object' do
 		@credenciales = MercadopagoTest::CREDENTIALS
 	end
 
-	it "The object must initialize only with credentials" do
+	it "The object must be a dependecy of Mercadopago::Mp" do
 		api = MercadopagoTest.new(@credenciales[:client_id], @credenciales[:client_secret])
 		api.should be_kind_of(Mercadopago::Mp)
+	end
+
+	it "SDK method initialize" do 
+		sdk = Mercadopago::Sdk.new @credenciales[:client_id], @credenciales[:client_secret]
+		sdk.should be_kind_of(Mercadopago::Sdk)
 	end
 
 end
@@ -34,6 +39,6 @@ describe 'Mercado Pago api' do
 	end
 
 	it "The preference need to be a mercadopago api preference hash, respond 200" do
-		
+		true
 	end
 end
