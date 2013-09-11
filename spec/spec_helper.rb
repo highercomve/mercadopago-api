@@ -4,8 +4,8 @@ require 'rspec'
 # setup test environment
 class MercadopagoTest < Mercadopago::Mp	
 	CREDENTIALS = {
-		:client_id => "your-client-id-on-mercadopago",
-		:client_secret => "your-client-secret-on-mercadopago"
+		:client_id => "5453328363694708",
+		:client_secret => "wxO9sB8Mer7wFzrjHUHLHC3iGygc4zgm"
 	}
 
 	CONFIG = {

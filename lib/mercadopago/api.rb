@@ -7,10 +7,10 @@ module Mercadopago
 		
 		def checkout_link(data)
 			preference = sdk.create_checkout_preference(data, config[:excluded_payment_methods])
-			if config[:sandbox].nil?
-				preference['init_point']
-			else
+			if config[:sandbox]
 				preference['sandbox_init_point']
+			else
+				preference['init_point']
 			end
 		end
 
