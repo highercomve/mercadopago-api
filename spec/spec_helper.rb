@@ -10,7 +10,7 @@ class MercadopagoTest < Mercadopago::Mp
 
 	CONFIG = {
 		:currency_id => "VEF",
-		:sandbox => true
+		:sandbox => false
 	}
 end
 
