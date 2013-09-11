@@ -17,10 +17,10 @@ module Mercadopago
 		def find_payment(payment_id)
 			if config[:sandbox]
 				result = sdk.search_payments_where({:id => payment_id})['results'].first
-				result["collection"] unless result.nil?
 			else
 				result = sdk.search_payment(payment_id)
 			end
+			result["collection"] unless result.nil?
 		end
 
 		def sdk
