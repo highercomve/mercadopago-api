@@ -41,4 +41,14 @@ describe 'Mercado Pago api' do
 	it "The preference need to be a mercadopago api preference hash, respond 200" do
 		true
 	end
+
+	it "Search a payment and return only the collection" do
+		payment_id = "660685397121"
+		payment = @api.find_payment(payment_id)
+		if payment
+			payment.should == @api.sdk.search_payment(payment_id)
+		else
+			payment[:code].should == 404
+		end
+	end
 end
