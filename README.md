@@ -1,6 +1,6 @@
 # Mercadopago::Api
 
-TODO: Write a gem description
+This is a Gem to manage mercadopago using ruby, you can use the Gem like a simple Sdk to mercadopago api or like a extension module with another options.
 
 ## Installation
 
@@ -107,13 +107,10 @@ Get a notification (IPN) payment info, details [here](http://developers.mercadop
 
 	payment = mp_client.get_payment_info(notificaion_payment_id)
 
-Search a payment by payment_id, you can get that when you set your back_urls on checkout Preference, the api will send using query string parameters to your back_url (the api will responde in this case a parameter call collection_id == payment_id)
-
-	payment = mp_client.search_payment(payment_id)
-
-The response for a payment search is:
+This will return and object like this:
 
 	{
+		code: 200,
 		collection: {
 			id: 52675155,
 			site_id: "Country ID",
@@ -161,6 +158,40 @@ The response for a payment search is:
 		}
 	}
 
+Search a payment by payment_id, you can get that when you set your back_urls on checkout Preference, the api will send using query string parameters to your back_url (the api will responde in this case a parameter call collection_id == payment_id)
+
+	payment = mp_client.search_payment(payment_id)
+
+The response for a payment search is:
+
+	{
+    id: id-del-pago,
+    site_id: "Identificador de país",
+    date_created: "2011-12-25T12:16:45.000-04:00",
+    date_approved: "2011-12-25T12:16:45.000-04:00",
+    last_modified: "2011-12-25T12:16:55.000-04:00",
+    collector_id: id-del-vendedor,
+    payer: {
+        id: 36073078,
+        email: "payer@email.com"
+    }
+    order_id: "id-orden",
+    external_reference: null,
+    reason: "Título de lo que estás pagando",
+    transaction_amount: 40,
+    currency_id: "Tipo de moneda",
+    total_paid_amount: 40,
+    shipping_cost: 0,
+    net_received_amount: 38,
+    status: "approved",
+    status_detail: "accredited",
+    released: "yes",
+    payment_type: "credit_card",
+    installments: 1,
+    money_release_date: "2011-12-27T12:16:45.000-04:00",
+    operation_type: "regular_payment"
+	}
+
 Search in all your payments given a hash, this hash will set your search parameters. For more details of what parameters you can use to search look [here](http://developers.mercadopago.com/documentation/search-received-payments#search-filters)
 
 	search_query = { :id => "13232333" } 
@@ -179,7 +210,7 @@ the response of that will be:
 			offset: 10
 		},
 		results: [
-			collention ## one array of collection, see previus response code
+			collection ## one array of collection, see previus response code
 		]
 	}
 
