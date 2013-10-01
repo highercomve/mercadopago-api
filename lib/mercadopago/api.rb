@@ -1,5 +1,5 @@
-require_relative "./sdk"
-
+require "mercadopago/sdk"
+:w
 module Mercadopago
   module Api
     attr_writer :credentials, :preference

@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'rest_client'
 require 'json/ext'
 require 'uri'
@@ -6,7 +5,7 @@ require 'uri'
 module Mercadopago
   class Sdk
 
-    attr_accessor :client_id, :client_secret, :sandbox, :checkout
+    attr_accessor :client_id, :client_secret, :sandbox
     attr_writer :access_token
     
     def initialize(client_id, client_secret, sandbox=false)
@@ -39,53 +38,88 @@ module Mercadopago
         }
       end
       url = "/checkout/preferences?access_token="+access_token
-      response = Rest::exec(:post, url, data, true)
-      if response[:code] = 201
-        @checkout = response
-      else
-        response
-      end
+      Rest::exec(:post, url, data, true)
     end
 
     def update_checkout_preference(preference_id, data)
-      url = sandbox_prefix + "/checkout/preferences/#{preference_id}?access_token=#{access_token}"
+      url = build_url "/checkout/preferences/#{preference_id}"
       Rest::exec(:put, url, data, true)
     end
 
     def get_checkout_preference(id)
-      url = sandbox_prefix + "/checkout/preferences/#{preference_id}?access_token=#{access_token}"
+      url = build_url "/checkout/preferences/#{preference_id}"
       Rest::exec(:get, url, nil, true)
     end
 
+    # This method create a preapproval payment (recurrent payment)
+    # Recive a data hash with this structure:
+    #
+    # data = {
+    #   payer_email: String,
+    #   back_url: String, 
+    #   reason: String,
+    #   external_reference: String,
+    #   auto_recurring: {
+    #     frecuency: Number,
+    #     frequency_type: String,  // months or days
+    #     transaction_amount: Number,
+    #     currency_id: String,
+    #     start_date,
+    #     end_date
+    #   }
+    #
+    # For more information about avaliable options go to 
+    # http://developers.mercadopago.com/documentation/glossary/recurring-payments
+   def create_preapproval_payment(data)
+      url = build_url "/preapproval"
+      Rest::exec(:post, url, data, true)
+    end
+
+    # This method get all the information about a recurrent payment
+    # for information about what return this method go to 
+    # http://developers.mercadopago.com/documentation/glossary/recurring-payments#!/get
+    def get_preapproval_payment(id)
+      url = build_url "/preapproval/#{id}"
+      Rest::exec(:get, url)
+    end
+
     def get_payment_info(notification_id)
-      url = sandbox_prefix + "/collections/notifications/#{notification_id}?access_token=#{access_token}"
+      url = build_url "/collections/notifications/#{notification_id}"
       Rest::exec(:get, url, nil, true)
     end
 
     def search_payment(payment_id)
-      url = sandbox_prefix + "/collections/#{payment_id}?access_token=#{access_token}"
+      url = build_url "/collections/#{payment_id}"
       Rest::exec(:get, url, nil, true)
     end
 
     def search_payments_where(params)
-      url = sandbox_prefix + "/collections/search"
+      url = build_url "/collections/search", false
       params[:access_token] = access_token 
       Rest::exec(:get, url, { :params => params })		
     end 
 
     def create_test_user(site_id)
-      url = "users/test_user?access_token=#{access_token}"
+      url = build_url "users/test_user"
       Rest::exec(:post, url, { :site_id => site_id }, true )
     end
 
     def refund_payment(payment_id)
-      url = "/collections/#{payment_id}?access_token=#{access_token}"
+      url = build_url "/collections/#{payment_id}"
       Rest::exec(:put, url, {:status => "refunded"}, true )
     end
 
     def cancel_payment(payment_id)
-      url = "/collections/#{payment_id}?access_token=#{access_token}"
+      url = build_url "/collections/#{payment_id}"
       Rest::exec(:put, url, {:status => "cancelled"}, true )
+    end
+
+    def build_url(action, access_token=true)
+      if access_token
+        sandbox_prefix + action + "?access_token=#{access_token}"
+      else
+        sandbox_prefix + action
+      end
     end
 
     def sandbox_prefix 

@@ -1,5 +1,5 @@
-require_relative "./mercadopago/api"
-require_relative "./mercadopago/version"
+require "mercadopago/api"
+require "mercadopago/version"
 
 module Mercadopago
   class Mp

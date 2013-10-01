@@ -165,7 +165,7 @@ Search a payment by payment_id, you can get that when you set your back_urls on 
 The response for a payment search is:
 
 	{
-    	id: id-del-pago,
+	id: id-del-pago,
     	site_id: "Identificador de país",
     	date_created: "2011-12-25T12:16:45.000-04:00",
     	date_approved: "2011-12-25T12:16:45.000-04:00",
@@ -222,6 +222,33 @@ Cancel Payment
 
 	cancel = mp_client.cancel_payment(payment_id)
 
+Create recurrent payment (preapproval payment)
+
+This method create a preapproval payment (recurrent payment). Recive a data hash with this structure
+
+	data = {
+	  payer_email: String,
+	  back_url: String, 
+	  reason: String,
+	  external_reference: String,
+	  auto_recurring: {
+	    frecuency: Number,
+	    frequency_type: String,  // months or days
+	    transaction_amount: Number,
+	    currency_id: String,
+	    start_date,
+	    end_date
+	  }
+
+For more information about avaliable options go to [here](http://developers.mercadopago.com/documentation/glossary/recurring-payments)
+ 
+	preapproval_payment = mp_client.create_preapproval_payment(data)
+
+Get a recurrent payment information
+
+This method get all the information about a recurrent payments. for more information about what return this method go to [here](http://developers.mercadopago.com/documentation/glossary/recurring-payments#!/get)
+    
+	preapproval_payment = mp_client.get_preapproval_payment(id)
 	
 ### Usage like extension 
 
