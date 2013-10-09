@@ -6,7 +6,6 @@ module Mercadopago
   class Sdk
 
     attr_accessor :client_id, :client_secret, :sandbox
-    attr_writer :access_token
     
     def initialize(client_id, client_secret, sandbox=false)
       @client_id = client_id 
@@ -22,13 +21,10 @@ module Mercadopago
         :client_secret => @client_secret
       }
       result = Rest::exec(:post, url, data)
-      if result[:code] == 200
-        @access_token = result["access_token"] 
-      end
     end
 
     def access_token
-      @access_token || get_access_token
+      @access_token ||= get_access_token["access_token"]
     end
 
     def create_checkout_preference(data, exclude_methods=nil)
@@ -114,8 +110,8 @@ module Mercadopago
       Rest::exec(:put, url, {:status => "cancelled"}, true )
     end
 
-    def build_url(action, access_token=true)
-      if access_token
+    def build_url(action, token=true)
+      if token
         sandbox_prefix + action + "?access_token=#{access_token}"
       else
         sandbox_prefix + action
