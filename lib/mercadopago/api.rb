@@ -20,7 +20,11 @@ module Mercadopago
       else
         result = sdk.search_payment(payment_id)
       end
-      result
+      if result["collection"].nil?
+				result
+			else
+				result["collection"]
+			end
     end
 
     def find_payment_with_notification(payment_id)
