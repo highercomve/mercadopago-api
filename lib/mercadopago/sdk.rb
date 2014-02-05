@@ -67,7 +67,7 @@ module Mercadopago
     # For more information about avaliable options go to 
     # http://developers.mercadopago.com/documentation/glossary/recurring-payments
    def create_preapproval_payment(data)
-      url = build_url "/preapproval"
+      url = "/preapproval?access_token="+access_token
       Rest::exec(:post, url, data, true)
     end
 
@@ -75,7 +75,7 @@ module Mercadopago
     # for information about what return this method go to 
     # http://developers.mercadopago.com/documentation/glossary/recurring-payments#!/get
     def get_preapproval_payment(id)
-      url = build_url "/preapproval/#{id}"
+      url = "/preapproval/#{id}"
       Rest::exec(:get, url)
     end
 
