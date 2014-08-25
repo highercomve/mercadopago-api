@@ -6,9 +6,9 @@ module Mercadopago
   class Sdk
 
     attr_accessor :client_id, :client_secret, :sandbox
-    
+
     def initialize(client_id, client_secret, sandbox=false)
-      @client_id = client_id 
+      @client_id = client_id
       @client_secret = client_secret
       @sandbox = sandbox
     end
@@ -29,7 +29,7 @@ module Mercadopago
 
     def create_checkout_preference(data, exclude_methods=nil)
       unless exclude_methods.nil?
-        data[:payment_methods] = { 
+        data[:payment_methods] = {
           :excluded_payment_methods => exclude_methods
         }
       end
@@ -52,7 +52,7 @@ module Mercadopago
     #
     # data = {
     #   payer_email: String,
-    #   back_url: String, 
+    #   back_url: String,
     #   reason: String,
     #   external_reference: String,
     #   auto_recurring: {
@@ -64,7 +64,7 @@ module Mercadopago
     #     end_date
     #   }
     #
-    # For more information about avaliable options go to 
+    # For more information about avaliable options go to
     # http://developers.mercadopago.com/documentation/glossary/recurring-payments
    def create_preapproval_payment(data)
       url = "/preapproval?access_token="+access_token
@@ -72,7 +72,7 @@ module Mercadopago
     end
 
     # This method get all the information about a recurrent payment
-    # for information about what return this method go to 
+    # for information about what return this method go to
     # http://developers.mercadopago.com/documentation/glossary/recurring-payments#!/get
     def get_preapproval_payment(id)
       url = "/preapproval/#{id}"
@@ -91,9 +91,9 @@ module Mercadopago
 
     def search_payments_where(params)
       url = build_url "/collections/search", false
-      params[:access_token] = access_token 
-      Rest::exec(:get, url, { :params => params })		
-    end 
+      params[:access_token] = access_token
+      Rest::exec(:get, url, { :params => params })
+    end
 
     def create_test_user(site_id)
       url = build_url "users/test_user"
@@ -110,6 +110,22 @@ module Mercadopago
       Rest::exec(:put, url, {:status => "cancelled"}, true )
     end
 
+    def get_movement(movement_id)
+      url = build_url "/mercadopago_account/movements/search?id=#{movement_id}"
+      Rest::exec(:get, url, nil, true)
+    end
+
+    def get_movement_by_reference_id(reference_id)
+      url = build_url "/mercadopago_account/movements/search?reference_id=#{movement_id}"
+      Rest::exec(:get, url, nil, true)
+    end
+
+    def search_movements(params)
+      params_query = URI.encode(params.map{|k,v| "#{k}=#{v}"}.join("&"))
+      url = build_url "/mercadopago_account/movements/search?#{params_query}"
+      Rest::exec(:get, url, nil, true)
+    end
+
     def build_url(action, token=true)
       if token
         sandbox_prefix + action + "?access_token=#{access_token}"
@@ -118,7 +134,7 @@ module Mercadopago
       end
     end
 
-    def sandbox_prefix 
+    def sandbox_prefix
       @sandbox ? "/sandbox":""
     end
 
@@ -126,7 +142,7 @@ module Mercadopago
 
   module Rest
     URL = "https://api.mercadolibre.com/"
-    def exec(method, url, data=nil, json=false) 
+    def exec(method, url, data=nil, json=false)
       url = uri(url)
       if !data.nil? and json
         RestClient.send(method, url, data.to_json,  :content_type => :json, :accept => :json) do |response, request, result|
@@ -136,13 +152,13 @@ module Mercadopago
         RestClient.send(method, url, :accept => :json) do |response, request, result|
           build_response(response)
         end
-      else 
+      else
         RestClient.send(method, url, data) do |response, request, result|
           build_response(response)
         end
-      end 
+      end
     end
-    
+
     def build_response( response )
       r = JSON.parse(response.force_encoding("UTF-8"))
       r[:code] = response.code
@@ -152,7 +168,7 @@ module Mercadopago
     def uri(url)
       URI.join(URL, url).to_s
     end
-    
+
     module_function :exec, :uri, :build_response
   end
 end
