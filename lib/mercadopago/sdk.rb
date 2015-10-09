@@ -42,7 +42,7 @@ module Mercadopago
       Rest::exec(:put, url, data, true)
     end
 
-    def get_checkout_preference(id)
+    def get_checkout_preference(preference_id)
       url = build_url "/checkout/preferences/#{preference_id}"
       Rest::exec(:get, url, nil, true)
     end
