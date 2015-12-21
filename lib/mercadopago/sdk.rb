@@ -5,7 +5,7 @@ require 'uri'
 module Mercadopago
   class Sdk
 
-    attr_accessor :client_id, :client_secret, :sandbox
+    attr_accessor :client_id, :client_secret, :sandbox, :user_id
 
     def initialize(client_id, client_secret, sandbox=false)
       @client_id = client_id
@@ -21,6 +21,8 @@ module Mercadopago
         :client_secret => @client_secret
       }
       result = Rest::exec(:post, url, data)
+      @user_id = result["user_id"] if result
+      result
     end
 
     def access_token
@@ -35,6 +37,12 @@ module Mercadopago
       end
       url = "/checkout/preferences?access_token="+access_token
       Rest::exec(:post, url, data, true)
+    end
+
+    def get_balance(user_id = nil)
+      url = build_url "/users/{placeholder}/mercadopago_account/balance"
+      url.gsub!('{placeholder}', (user_id || @user_id).to_s)
+      Rest::exec(:get, url, nil, true)
     end
 
     def update_checkout_preference(preference_id, data)

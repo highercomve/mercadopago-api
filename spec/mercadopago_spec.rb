@@ -51,4 +51,11 @@ describe 'Mercado Pago api' do
       payment[:code].should == 404
     end
   end
+
+  it "Get user's balance" do
+    resp = @api.sdk.get_balance
+    resp["total_amount"].should be_a_kind_of(Numeric)
+    resp["available_balance"].should be_a_kind_of(Numeric)
+    resp["unavailable_balance"].should be_a_kind_of(Numeric)
+  end
 end
